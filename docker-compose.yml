@@ -1,0 +1,25 @@
+services:
+  # Setup notes: see README.md (or README.de.md)
+  synology-borg-server:
+    build:
+      context: ./context
+      dockerfile: Dockerfile
+    image: synology-borg-server:local
+    container_name: synology-borg-server
+    restart: unless-stopped
+    ports:
+      - "${SSH_HOST_PORT}:22" # Host SSH port : container SSH port
+    # Create .env from .env.example
+    env_file:
+      - ./.env
+    environment:
+      TZ: ${TZ}
+    volumes:
+      # Persist SSH host keys/config to keep server fingerprint stable
+      - ${SSH_CONFIG_DIR}:/etc/ssh
+
+      # Public keys allowed to connect (create this file on Synology first)
+      - ${AUTHORIZED_KEYS_FILE}:/config/authorized_keys:ro
+
+      # Borg repositories are stored here
+      - ${BORG_REPOS_DIR}:/var/backup/borg

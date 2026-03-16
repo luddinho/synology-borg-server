@@ -1,0 +1,8 @@
+# One key per client host, each restricted to its own repository path.
+# Replace each AAAA... with the client's real public key material.
+#
+# Host: client-host-1
+command="borg serve --restrict-to-path /var/backup/borg/client-host-1",restrict ssh-ed25519 AAAA... key-for-client-host-1
+
+# Host: client-host-2
+command="borg serve --restrict-to-path /var/backup/borg/client-host-2",restrict ssh-ed25519 AAAA... key-for-client-host-2
