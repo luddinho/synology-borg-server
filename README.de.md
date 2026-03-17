@@ -101,12 +101,60 @@ Starten (Build + Run):
 ```bash
 docker compose up -d --build
 ```
+<details>
+<summary>Beispielausgabe</summary>
+
+```text
+[+] Building 23.3s (9/9) FINISHED
+ => [synology-borg-server internal] load build definition from Dockerfile   2.7s
+ => => transferring dockerfile: 327B                                      0.0s
+ => [synology-borg-server internal] load .dockerignore                    2.5s
+ => => transferring context: 2B                                           0.0s
+ => [synology-borg-server internal] load metadata for docker.io/library/alpine:3.20   3.2s
+ => [synology-borg-server 1/4] FROM docker.io/library/alpine:3.20@sha256:a4f4213abb84c497377b8544c81b3564f313746700372ec4fe84653e4fb03805   4.5s
+ => => resolve docker.io/library/alpine:3.20@sha256:a4f4213abb84c497377b8544c81b3564f313746700372ec4fe84653e4fb03805   1.1s
+ => => sha256:a4f4213abb84c497377b8544c81b3564f313746700372ec4fe84653e4fb03805 9.22kB / 9.22kB   0.0s
+ => => sha256:b0cb30c51c47cdfde647364301758b14c335dea2fddc9490d4f007d67ecb2538 1.02kB / 1.02kB   0.0s
+ => => sha256:cc9071bd161080c1a543f3023b7d0db905b497e6ae757fe078227803bc7e4dc8 611B / 611B       0.0s
+ => => sha256:76eb174b37c3e263a212412822299b58d4098a7f96715f18c7eb6932c98b7efd 3.63MB / 3.63MB   0.8s
+ => => extracting sha256:76eb174b37c3e263a212412822299b58d4098a7f96715f18c7eb6932c98b7efd        0.5s
+ => [synology-borg-server internal] load build context                    1.2s
+ => => transferring context: 1.45kB                                      0.0s
+ => [synology-borg-server 2/4] RUN apk add --no-cache     openssh-server     borgbackup     tzdata   5.5s
+ => [synology-borg-server 3/4] COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh   1.6s
+ => [synology-borg-server 4/4] RUN chmod +x /usr/local/bin/docker-entrypoint.sh   1.5s
+ => [synology-borg-server] exporting to image                            2.9s
+ => => exporting layers                                                  2.8s
+ => => writing image sha256:d72b58bf9ca166207f14dd0d93e1fea4f44daf68c78dc6fb3548fee58a4f00b1      0.0s
+ => => naming to docker.io/library/synology-borg-server:local            0.2s
+[+] Running 2/2
+ ✔ Network synology-borg-server_default  Created   0.5s
+ ✔ Container synology-borg-server        Started   1.8s
+```
+</details>
+
+Logs anzeigen:
+
+</details>
 
 Logs anzeigen:
 
 ```bash
 docker compose logs -f synology-borg-server
 ```
+<details>
+<summary>Beispielausgabe</summary>
+
+```text
+synology-borg-server  | ssh-keygen: generating new host keys: RSA ECDSA ED25519
+synology-borg-server  | Server listening on 0.0.0.0 port 22.
+synology-borg-server  | Server listening on :: port 22.
+```
+</details>
+
+Stoppen:
+
+</details>
 
 Stoppen:
 
