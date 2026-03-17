@@ -60,6 +60,8 @@ synology-borg-server/
 
 ## Kompatibilität
 
+Dieses Projekt ist **nicht auf Synology NAS beschränkt**. Es kann auf jedem Linux-System verwendet werden, das die in diesem README genannten Voraussetzungen erfüllt und Docker Engine mit Compose-Unterstützung bereitstellt.
+
 Dieser Container funktioniert auf **jedem Synology NAS-Modell, das Docker unterstützt** (Container Manager), unabhängig von der CPU-Architektur. Da das Image direkt auf dem NAS zur Laufzeit gebaut wird (`docker compose up --build`), verwendet Docker automatisch die native Architektur des Hosts — `x86_64`, `aarch64` oder `armv7`.
 
 Das Alpine-Basis-Image und seine Pakete (`openssh`, `borgbackup`) sind für alle diese Architekturen verfügbar, sodass kein vorgefertigtes Image oder Cross-Compilation erforderlich ist.
