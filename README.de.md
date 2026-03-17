@@ -2,7 +2,7 @@
 
 **[🇬🇧 English Version](README.md)**
 
-Leichter BorgBackup-Server in Docker mit SSH-Schlüssel-Authentifizierung und pro Client eingeschränkten Repository-Pfaden.
+Einfacher BorgBackup-Server in Docker mit SSH-Schlüssel-Authentifizierung und pro Client eingeschränkten Repository-Pfaden.
 
 Motivation: Synology erlaubt für Nicht-Admin-Benutzer keinen interaktiven Shell-Login, und diese Benutzer können das paketinstallierte Borg nicht als Borg-Server verwenden. Dieser Container hilft dabei, auf einer Synology NAS einen dedizierten Borg-Server bereitzustellen.
 
@@ -33,7 +33,14 @@ Motivation: Synology erlaubt für Nicht-Admin-Benutzer keinen interaktiven Shell
   - Borg-Repositories
 - Ein dedizierter Nicht-Admin-Benutzer auf NAS/Server.
 
-## Ersteinrichtung (Single-Environment)
+
+## Start und Stopp
+
+Wie du den BorgBackup-Server einrichtest, startest und stoppst. Wähle die passende Variante für dein Setup.
+
+### Ersteinrichtung (Single-Environment)
+
+Führe diese Schritte aus, bevor du den Server das erste Mal startest:
 
 1. Umgebungs-Vorlage kopieren:
 
@@ -67,9 +74,35 @@ Motivation: Synology erlaubt für Nicht-Admin-Benutzer keinen interaktiven Shell
    - `context/authorized_keys.example` als Vorlage verwenden.
    - Pro Client-Key eine Zeile mit `--restrict-to-path` ergänzen.
 
-## Empfohlen: isolierte Prod- und Test-Stacks
+---
 
-Nutze zwei getrennte Environment-Dateien und unterschiedliche Compose-Projektnamen.
+### Single-Environment-Variante
+
+Diese Variante eignet sich am besten für einfache Setups, Heimanwender oder wenn du nur eine einzige BorgBackup-Server-Instanz benötigst. Alle Konfigurationen, Schlüssel und Repositories werden gemeinsam verwaltet. Nutze dies, wenn du keine strikte Trennung zwischen Produktion und Test brauchst.
+
+Starten (Build + Run):
+
+```bash
+docker compose up -d --build
+```
+
+Logs anzeigen:
+
+```bash
+docker compose logs -f sshd
+```
+
+Stoppen:
+
+```bash
+docker compose down
+```
+
+### Empfohlen: Isolierte Prod- und Test-Stacks
+
+Diese Variante ist ideal für fortgeschrittene Setups, produktive Umgebungen oder wenn du Produktions- und Testdaten, SSH-Schlüssel und Logs strikt trennen möchtest. Durch getrennte Environment-Dateien und Compose-Projektnamen kannst du mehrere unabhängige BorgBackup-Server-Instanzen auf demselben Host betreiben, ohne versehentliche Überschneidungen bei Daten oder Schlüsseln. Sehr empfehlenswert für alle, die sowohl Live- als auch Test-Backups verwalten oder für Teams mit unterschiedlichen Anforderungen.
+
+Nutze zwei getrennte Environment-Dateien und unterschiedliche Compose-Projektnamen für eine saubere Trennung.
 
 1. Lokale Environment-Dateien erstellen:
 
@@ -106,35 +139,18 @@ Nutze zwei getrennte Environment-Dateien und unterschiedliche Compose-Projektnam
 
 Das trennt Schlüssel, Repositories, SSH-Fingerprints und Änderungen sauber zwischen Prod und Test.
 
-## Start / Stopp (Single-Environment)
-
-Starten (Build + Run):
-
-```bash
-docker compose up -d --build
-```
-
-Logs anzeigen:
-
-```bash
-docker compose logs -f sshd
-```
-
-Stoppen:
-
-```bash
-docker compose down
-```
-
 ## Beispiel-Repository-URLs für Clients
 
 Empfohlen: Repository-URL ohne expliziten Port nutzen und SSH-Details über `BORG_RSH` setzen.
 
+**Bash/Zsh:**
 ```bash
 export BORG_RSH='ssh -p <SSH_PORT> -i ~/.ssh/<IDENTITY_FILE> -o IdentitiesOnly=yes'
+# Beispiel: Neues Repository initialisieren
+borg init --encryption=repokey-blake2 ssh://<BORG_USER>@<BACKUP_SERVER_HOST>/var/backup/borg/<DEIN_REPO_NAME>
 ```
 
-PowerShell:
+**PowerShell:**
 
 ```powershell
 $env:BORG_RSH = 'ssh -p <SSH_PORT> -i ~/.ssh/<IDENTITY_FILE> -o IdentitiesOnly=yes'

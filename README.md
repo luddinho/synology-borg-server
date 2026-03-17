@@ -33,7 +33,14 @@ Motivation: Synology does not allow interactive shell login for non-admin users,
   - Borg repositories
 - A dedicated non-admin user on your NAS/server.
 
-## First-time setup (single environment)
+
+## Start and Stop
+
+How to set up, start, and stop the BorgBackup server. Choose the approach that fits your setup.
+
+### First-time Setup (Single Environment)
+
+Follow these steps to prepare your environment before starting the server for the first time:
 
 1. Copy environment template:
 
@@ -67,11 +74,38 @@ Motivation: Synology does not allow interactive shell login for non-admin users,
    - Use `context/authorized_keys.example` as reference.
    - Add one line per client key with `--restrict-to-path`.
 
-## Recommended: isolated prod + test stacks
+---
 
-Use two independent environment files and different Compose project names.
+### Single-Environment Approach
 
-1. Create local env files:
+This approach is best suited for simple setups, home use, or when you only need a single BorgBackup server instance. All configuration, keys, and repositories are managed together. Use this if you do not need strict separation between production and test environments.
+
+Start (build and run):
+
+```bash
+docker compose up -d --build
+```
+
+Check logs:
+
+```bash
+docker compose logs -f sshd
+```
+
+Stop:
+
+```bash
+docker compose down
+```
+
+
+### Recommended: Isolated Prod + Test Stacks
+
+This approach is ideal for advanced setups, production environments, or when you want to keep production and test data, SSH keys, and logs strictly separated. By using separate environment files and Compose project names, you can run multiple independent BorgBackup server instances on the same host without risk of accidental data or key overlap. This setup is highly recommended for anyone managing both live and test backups, or for teams with different operational needs.
+
+Use two independent environment files and different Compose project names for strong separation.
+
+1. Create local environment files:
 
    ```bash
    cp .env.prod.example .env.prod
@@ -79,8 +113,8 @@ Use two independent environment files and different Compose project names.
    ```
 
 2. Adjust values in each file:
-   - Different `SSH_HOST_PORT` (for example: prod `2222`, test `2223`)
-   - Different host paths (for example: `/volume1/borg-backups-prod/...` vs `/volume1/borg-backups-test/...`)
+   - Different `SSH_HOST_PORT` (e.g., prod `2222`, test `2223`)
+   - Different host paths (e.g., `/volume1/borg-backups-prod/...` vs `/volume1/borg-backups-test/...`)
    - Different users/UIDs if possible (`borgprod` / `borgtest`)
 
 3. Start both stacks:
@@ -106,35 +140,20 @@ Use two independent environment files and different Compose project names.
 
 This gives strong separation for keys, repos, host fingerprints, and operational changes.
 
-## Start / stop (single environment)
-
-Start (build + run):
-
-```bash
-docker compose up -d --build
-```
-
-Check logs:
-
-```bash
-docker compose logs -f sshd
-```
-
-Stop:
-
-```bash
-docker compose down
-```
-
 ## Client repository URL examples
 
 Recommended: keep repository URL without explicit port and define SSH details via `BORG_RSH`.
 
+
+
+**Bash/Zsh:**
 ```bash
 export BORG_RSH='ssh -p <SSH_PORT> -i ~/.ssh/<IDENTITY_FILE> -o IdentitiesOnly=yes'
+# Example: initialize a new repository
+borg init --encryption=repokey-blake2 ssh://<BORG_USER>@<BACKUP_SERVER_HOST>/var/backup/borg/<YOUR_REPO_NAME>
 ```
 
-PowerShell:
+**PowerShell:**
 
 ```powershell
 $env:BORG_RSH = 'ssh -p <SSH_PORT> -i ~/.ssh/<IDENTITY_FILE> -o IdentitiesOnly=yes'
