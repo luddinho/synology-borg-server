@@ -154,6 +154,7 @@ Example with default user:
 
 - SSH password login is disabled; only public key auth is allowed.
 - Keep `/volume1/borg-backups/config/ssh` persistent to avoid host key changes.
+- `sshd` runs as root inside the container by design; the setup applies hardening via `no-new-privileges`, dropped Linux capabilities (`cap_drop: [ALL]` with a minimal `cap_add` allowlist), and `tmpfs` for `/run` and `/tmp`.
 - To find UID/GID on the NAS:
 
   ```bash

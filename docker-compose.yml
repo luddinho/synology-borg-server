@@ -7,6 +7,20 @@ services:
     image: synology-borg-server:local
     container_name: synology-borg-server
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+      - SETUID
+      - SETGID
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+    tmpfs:
+      - /run
+      - /tmp
     ports:
       - "${SSH_HOST_PORT}:22" # Host SSH port : container SSH port
     # Create .env from .env.example

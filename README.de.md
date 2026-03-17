@@ -154,6 +154,7 @@ Beispiel mit Standard-Benutzer:
 
 - SSH-Passwort-Login ist deaktiviert; nur Public-Key-Authentifizierung ist erlaubt.
 - `/volume1/borg-backups/config/ssh` muss persistent bleiben, damit sich Host-Keys nicht ändern.
+- `sshd` läuft im Container aus technischen Gründen als root; zur Härtung werden `no-new-privileges`, reduzierte Linux-Capabilities (`cap_drop: [ALL]` mit minimaler `cap_add`-Allowlist) sowie `tmpfs` für `/run` und `/tmp` verwendet.
 - UID/GID auf dem NAS herausfinden:
 
   ```bash
