@@ -34,13 +34,20 @@ Alpine eignet sich ideal für Szenarien, in denen eine sichere, schnelle und min
 
 ## Repository-Struktur
 
-- `docker-compose.yml` – Service-Konfiguration und Host-Volume-Mounts.
-- `context/Dockerfile` – Container-Image-Definition.
-- `context/docker-entrypoint.sh` – Laufzeit-Setup für User + sshd.
-- `.env.example` – Vorlage für Single-Environment.
-- `.env.prod.example` – Vorlage für Produktion.
-- `.env.test.example` – Vorlage für Test.
-- `authorized_keys.example` – Vorlage mit eingeschränkten Key-Einträgen.
+```
+synology-borg-server/
+├── docker-compose.yml                 – Service-Konfiguration und Host-Volume-Mounts.
+├── .env.example                       – Vorlage für Single-Environment.
+├── .env.prod.example                  – Vorlage für Produktion.
+├── .env.test.example                  – Vorlage für Test.
+├── authorized_keys.example            – Vorlage mit eingeschränkten Key-Einträgen.
+├── context/
+│   ├── Dockerfile                     – Container-Image-Definition.
+│   └── docker-entrypoint.sh           – Laufzeit-Setup für User + sshd.
+├── README.md                          – englische Version.
+├── README.de.md                       – diese Datei (Deutsch).
+└── LICENSE                            – Projektlizenz.
+```
 
 ## Voraussetzungen
 
@@ -58,6 +65,31 @@ Dieser Container funktioniert auf **jedem Synology NAS-Modell, das Docker unters
 Das Alpine-Basis-Image und seine Pakete (`openssh`, `borgbackup`) sind für alle diese Architekturen verfügbar, sodass kein vorgefertigtes Image oder Cross-Compilation erforderlich ist.
 
 > **Hinweis:** Docker (Container Manager) selbst setzt eine Mindest-DSM-Version und ein unterstütztes Modell voraus. Wenn Docker auf deinem NAS läuft, funktioniert dieser Container.
+
+## NAS-Verzeichnisstruktur
+
+Basierend auf den Umgebungsvariablen in `.env` (oder `.env.prod`/`.env.test`) hat dein Synology NAS eine Struktur wie folgt:
+
+```
+/volume1/borg-backups/                         # oder borg-backups-prod, borg-backups-test, etc.
+├── config/
+│   ├── ssh/                                   # SSH_CONFIG_DIR — persistent SSH-Host-Keys
+│   │   ├── ssh_host_rsa_key
+│   │   ├── ssh_host_rsa_key.pub
+│   │   ├── ssh_host_ed25519_key
+│   │   └── ssh_host_ed25519_key.pub
+│   └── authorized_keys                        # AUTHORIZED_KEYS_FILE — öffentliche Schlüssel von Clients
+└── repos/                                     # BORG_REPOS_DIR — alle Borg-Repositories
+    ├── client-host-1/                         # Repository für client-host-1
+    ├── client-host-2/                         # Repository für client-host-2
+    └── .../
+```
+
+**Wichtige Punkte:**
+- Jedes Verzeichnis und jede Datei wird vom Backup-Benutzer (definiert durch `BORG_UID:BORG_GID`) besessen.
+- Berechtigungen sind auf Zugriff beschränkt (750 für Verzeichnisse, 640 für Dateien).
+- SSH-Host-Keys sind persistent, damit sich der Fingerprint über Container-Neustarts nicht ändert.
+- Jedes Client-Repository ist isoliert und Zugriff wird über `authorized_keys` kontrolliert.
 
 
 ## Start und Stopp
