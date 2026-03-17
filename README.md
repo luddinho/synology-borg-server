@@ -15,9 +15,9 @@ Synology DSM does not allow interactive shell login for non-admin users, and tho
 - Persists SSH host keys to keep the SSH fingerprint stable.
 - Stores all Borg repositories under `/var/backup/borg` (mounted to your NAS storage).
 
-## About Alpine Linux 3.20
+## About Alpine Linux 3.23
 
-This project uses Alpine Linux 3.20 as the base image for the container. Alpine Linux is a lightweight, security-focused Linux distribution designed for simplicity and efficiency. It is widely used in Docker environments because:
+This project uses Alpine Linux 3.23 as the base image for the container. Alpine Linux is a lightweight, security-focused Linux distribution designed for simplicity and efficiency. It is widely used in Docker environments because:
 
 - The base image is extremely small (under 6MB), which speeds up builds and reduces attack surface.
 - Alpine uses musl libc and busybox for minimalism and performance.
@@ -26,7 +26,7 @@ This project uses Alpine Linux 3.20 as the base image for the container. Alpine 
 - Security features: minimal privileges, hardened kernel options, reproducible builds.
 
 How it works in Docker:
-- The official `alpine:3.20` image provides a minimal root filesystem.
+- The official `alpine:3.23` image provides a minimal root filesystem.
 - You install only the packages you need (e.g., `openssh-server`, `borgbackup`, `tzdata`) using `apk add`.
 - The container starts quickly, uses little memory, and is easy to keep up-to-date.
 
