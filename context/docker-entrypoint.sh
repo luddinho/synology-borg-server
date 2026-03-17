@@ -43,7 +43,6 @@ AuthorizedKeysFile /home/${BORG_USER}/.ssh/authorized_keys
 LogLevel VERBOSE
 PidFile /run/sshd.pid
 ChrootDirectory none
-Subsystem sftp internal-sftp
 EOF
 
 exec "$@"
