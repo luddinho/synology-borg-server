@@ -22,6 +22,7 @@ chown "${BORG_UID}:${BORG_GID}" "/home/${BORG_USER}/.ssh/authorized_keys"
 chmod 600 "/home/${BORG_USER}/.ssh/authorized_keys"
 
 install -d -m 755 /run/sshd
+install -d -m 755 /var/empty
 
 if [ ! -f /etc/ssh/ssh_host_ed25519_key ]; then
   ssh-keygen -A
@@ -40,7 +41,6 @@ PubkeyAuthentication yes
 PermitRootLogin no
 AllowUsers ${BORG_USER}
 AuthorizedKeysFile /home/${BORG_USER}/.ssh/authorized_keys
-UsePrivilegeSeparation no
 LogLevel VERBOSE
 PidFile /run/sshd.pid
 ChrootDirectory none
