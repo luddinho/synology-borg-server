@@ -4,7 +4,8 @@
 
 Lightweight BorgBackup server running in Docker with SSH key-based authentication and per-client path restrictions.
 
-Motivation: Synology does not allow interactive shell login for non-admin users, and those users cannot use the package-installed Borg as a Borg server. This container helps provide a dedicated Borg server on a Synology NAS.
+## Motivation
+Synology DSM does not allow interactive shell login for non-admin users, and those users cannot use the package-installed Borg as a Borg server. This container helps provide a dedicated Borg server on a Synology NAS.
 
 ## What this project does
 
