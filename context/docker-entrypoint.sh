@@ -40,6 +40,7 @@ PubkeyAuthentication yes
 PermitRootLogin no
 AllowUsers ${BORG_USER}
 AuthorizedKeysFile /home/${BORG_USER}/.ssh/authorized_keys
+UsePrivilegeSeparation no
 LogLevel VERBOSE
 PidFile /run/sshd.pid
 ChrootDirectory none
