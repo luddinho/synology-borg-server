@@ -18,6 +18,7 @@ services:
       - CHOWN
       - DAC_OVERRIDE
       - FOWNER
+      - SYS_CHROOT
     tmpfs:
       - /run
       - /tmp
