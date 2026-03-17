@@ -231,7 +231,9 @@ Example repository URLs:
 - `.env`, `.env.prod`, and `.env.test` should remain local and untracked.
 
 <details>
-<summary>Example: Container logs after <code>docker compose up -d --build</code></summary>
+<summary>Example: Successful authentication and backup session logs</summary>
+
+This example shows log output from the container after a client host connects, authenticates, and initiates a backup. It demonstrates SSH key authentication and the `borg serve` command being executed for the client.
 
 ```
 synology-borg-server-sshd-1  | Connection from 192.168.0.1 port 37771 on 192.168.0.2 port 22 rdomain ""

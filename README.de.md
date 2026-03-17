@@ -228,7 +228,9 @@ Beispiel-Repository-URLs:
 - `.env`, `.env.prod` und `.env.test` sollten lokal bleiben und nicht committed werden.
 
 <details>
-<summary>Beispiel: Container-Logs nach <code>docker compose up -d --build</code></summary>
+<summary>Beispiel: Erfolgreiche Authentifizierung und Backup-Session-Logs</summary>
+
+Dieses Beispiel zeigt Log-Ausgaben aus dem Container, nachdem ein Client Host sich verbindet, authentifiziert und ein Backup startet. Es demonstriert die SSH-Schlüssel-Authentifizierung und den ausgeführten Befehl `borg serve` für den Client.
 
 ```
 synology-borg-server-sshd-1  | Connection from 192.168.0.1 port 37771 on 192.168.0.2 port 22 rdomain ""
