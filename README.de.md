@@ -226,3 +226,30 @@ Beispiel-Repository-URLs:
 - `sshd` läuft im Container aus technischen Gründen als root.
 - Runtime-Härtung ist aktiv (`no-new-privileges`, reduzierte Capabilities inkl. `SYS_CHROOT`, `tmpfs` für `/run` und `/tmp`).
 - `.env`, `.env.prod` und `.env.test` sollten lokal bleiben und nicht committed werden.
+
+<details>
+<summary>Beispiel: Container-Logs nach <code>docker compose up -d --build</code></summary>
+
+```
+synology-borg-server-sshd-1  | Connection from 192.168.0.1 port 37771 on 192.168.0.2 port 22 rdomain ""
+synology-borg-server-sshd-1  | Accepted key ED25519 SHA256:**************************************** found at /home/borg/.ssh/authorized_keys:1
+synology-borg-server-sshd-1  | Postponed publickey for borg from 192.168.0.1 port 37771 ssh2 [preauth]
+synology-borg-server-sshd-1  | Accepted key ED25519 SHA256:**************************************** found at /home/borg/.ssh/authorized_keys:1
+synology-borg-server-sshd-1  | Accepted publickey for borg from 192.168.0.1 port 37771 ssh2: ED25519 SHA256:****************************************
+synology-borg-server-sshd-1  | User child is on pid 71
+synology-borg-server-sshd-1  | Starting session: forced-command (key-option) 'borg serve --restrict-to-path /var/backup/borg/client-host-1' for borg from 192.168.0.1 port 37771 id 0
+synology-borg-server-sshd-1  | Received disconnect from 192.168.0.1 port 37771:11: disconnected by user
+synology-borg-server-sshd-1  | Disconnected from user borg 192.168.0.1 port 37771
+
+synology-borg-server-sshd-1  | Connection from 192.168.0.1 port 37783 on 192.168.0.2 port 22 rdomain ""
+synology-borg-server-sshd-1  | Accepted key ED25519 SHA256:**************************************** found at /home/borg/.ssh/authorized_keys:2
+synology-borg-server-sshd-1  | Postponed publickey for borg from 192.168.0.1 port 37783 ssh2 [preauth]
+synology-borg-server-sshd-1  | Accepted key ED25519 SHA256:**************************************** found at /home/borg/.ssh/authorized_keys:2
+synology-borg-server-sshd-1  | Accepted publickey for borg from 192.168.0.1 port 37783 ssh2: ED25519 SHA256:****************************************
+synology-borg-server-sshd-1  | User child is on pid 76
+synology-borg-server-sshd-1  | Starting session: forced-command (key-option) 'borg serve --restrict-to-path /var/backup/borg/client-host-2' for borg from 192.168.0.1 port 37783 id 0
+synology-borg-server-sshd-1  | Received disconnect from 192.168.0.1 port 37783:11: disconnected by user
+synology-borg-server-sshd-1  | Disconnected from user borg 192.168.0.1 port 37783
+```
+
+</details>
