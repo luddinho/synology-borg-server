@@ -5,7 +5,6 @@ services:
       context: ./context
       dockerfile: Dockerfile
     image: synology-borg-server:local
-    container_name: synology-borg-server
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -24,11 +23,11 @@ services:
       - /tmp
     ports:
       - "${SSH_HOST_PORT}:22" # Host SSH port : container SSH port
-    # Create .env from .env.example
-    env_file:
-      - ./.env
     environment:
       TZ: ${TZ}
+      BORG_USER: ${BORG_USER}
+      BORG_UID: ${BORG_UID}
+      BORG_GID: ${BORG_GID}
     volumes:
       # Persist SSH host keys/config to keep server fingerprint stable
       - ${SSH_CONFIG_DIR}:/etc/ssh
