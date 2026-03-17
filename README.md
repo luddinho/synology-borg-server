@@ -93,8 +93,8 @@ Use two independent environment files and different Compose project names.
 4. Follow logs:
 
    ```bash
-   docker compose --env-file .env.prod -p borg-prod logs -f synology-borg-server
-   docker compose --env-file .env.test -p borg-test logs -f synology-borg-server
+   docker compose --env-file .env.prod -p borg-prod logs -f sshd
+   docker compose --env-file .env.test -p borg-test logs -f sshd
    ```
 
 5. Stop stacks:
@@ -117,7 +117,7 @@ docker compose up -d --build
 Check logs:
 
 ```bash
-docker compose logs -f synology-borg-server
+docker compose logs -f sshd
 ```
 
 Stop:

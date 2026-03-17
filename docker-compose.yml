@@ -1,6 +1,6 @@
 services:
   # Setup notes: see README.md (or README.de.md)
-  synology-borg-server:
+  sshd:
     build:
       context: ./context
       dockerfile: Dockerfile

@@ -93,8 +93,8 @@ Nutze zwei getrennte Environment-Dateien und unterschiedliche Compose-Projektnam
 4. Logs je Umgebung prüfen:
 
    ```bash
-   docker compose --env-file .env.prod -p borg-prod logs -f synology-borg-server
-   docker compose --env-file .env.test -p borg-test logs -f synology-borg-server
+   docker compose --env-file .env.prod -p borg-prod logs -f sshd
+   docker compose --env-file .env.test -p borg-test logs -f sshd
    ```
 
 5. Stacks stoppen:
@@ -117,7 +117,7 @@ docker compose up -d --build
 Logs anzeigen:
 
 ```bash
-docker compose logs -f synology-borg-server
+docker compose logs -f sshd
 ```
 
 Stoppen:
