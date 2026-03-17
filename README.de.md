@@ -22,7 +22,7 @@ Motivation: Synology erlaubt für Nicht-Admin-Benutzer keinen interaktiven Shell
 - `.env.example` – Vorlage für Single-Environment.
 - `.env.prod.example` – Vorlage für Produktion.
 - `.env.test.example` – Vorlage für Test.
-- `context/authorized_keys.example` – Vorlage mit eingeschränkten Key-Einträgen.
+- `authorized_keys.example` – Vorlage mit eingeschränkten Key-Einträgen.
 
 ## Voraussetzungen
 
@@ -71,7 +71,7 @@ Führe diese Schritte aus, bevor du den Server das erste Mal startest:
    ```
 
 4. `authorized_keys` auf dem Host bearbeiten:
-   - `context/authorized_keys.example` als Vorlage verwenden.
+   - `authorized_keys.example` als Vorlage verwenden.
    - Pro Client-Key eine Zeile mit `--restrict-to-path` ergänzen.
 
 ---

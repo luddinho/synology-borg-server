@@ -22,7 +22,7 @@ Motivation: Synology does not allow interactive shell login for non-admin users,
 - `.env.example` – single-environment template.
 - `.env.prod.example` – production template.
 - `.env.test.example` – test template.
-- `context/authorized_keys.example` – template with restricted key entries.
+- `authorized_keys.example` – template with restricted key entries.
 
 ## Prerequisites
 
@@ -71,7 +71,7 @@ Follow these steps to prepare your environment before starting the server for th
    ```
 
 4. Edit `authorized_keys` on the host:
-   - Use `context/authorized_keys.example` as reference.
+   - Use `authorized_keys.example` as reference.
    - Add one line per client key with `--restrict-to-path`.
 
 ---
