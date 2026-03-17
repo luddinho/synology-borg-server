@@ -219,16 +219,23 @@ Beispiel-Repository-URLs:
 - `ssh://<BORG_USER>@<BACKUP_SERVER_HOST>/var/backup/borg/client-host-1`
 - `ssh://<BORG_USER>@<BACKUP_SERVER_HOST>/var/backup/borg/client-host-2`
 
-## Hinweise
-
-- SSH-Passwort-Login ist deaktiviert; nur Public-Key-Authentifizierung ist erlaubt.
-- SSH-Host-Key-Verzeichnisse müssen persistent bleiben, damit sich Fingerprints nicht ändern.
-- `sshd` läuft im Container aus technischen Gründen als root.
-- Runtime-Härtung ist aktiv (`no-new-privileges`, reduzierte Capabilities inkl. `SYS_CHROOT`, `tmpfs` für `/run` und `/tmp`).
-- `.env`, `.env.prod` und `.env.test` sollten lokal bleiben und nicht committed werden.
+## Beispiele
+## Protokollierung
 
 <details>
-<summary>Beispiel: Erfolgreiche Authentifizierung und Backup-Session-Logs</summary>
+<summary>Erste Log-Einträge beim Container-Start</summary>
+
+Dieses Beispiel zeigt die ersten Log-Einträge nach dem Build und Start des Containers. Der SSH-Server lauscht auf Verbindungen.
+
+```
+synology-borg-server-sshd-1  | Server listening on 0.0.0.0 port 22.
+synology-borg-server-sshd-1  | Server listening on :: port 22.
+```
+
+</details>
+
+<details>
+<summary>Erfolgreiche Authentifizierung und Backup-Session-Logs</summary>
 
 Dieses Beispiel zeigt Log-Ausgaben aus dem Container, nachdem ein Client Host sich verbindet, authentifiziert und ein Backup startet. Es demonstriert die SSH-Schlüssel-Authentifizierung und den ausgeführten Befehl `borg serve` für den Client.
 
@@ -255,3 +262,11 @@ synology-borg-server-sshd-1  | Disconnected from user borg 192.168.0.1 port 3778
 ```
 
 </details>
+
+## Hinweise
+
+- SSH-Passwort-Login ist deaktiviert; nur Public-Key-Authentifizierung ist erlaubt.
+- Halte die SSH-Host-Key-Verzeichnisse persistent, um Fingerprint-Änderungen zu vermeiden.
+- `sshd` läuft im Container absichtlich als root.
+- Laufzeit-Hardening ist aktiviert (`no-new-privileges`, reduzierte Capabilities mit Minimal-Whitelist, `tmpfs` für `/run` und `/tmp`).
+- `.env`, `.env.prod` und `.env.test` sollten lokal und unverfolgt bleiben.

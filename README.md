@@ -222,16 +222,23 @@ Example repository URLs:
 - `ssh://<BORG_USER>@<BACKUP_SERVER_HOST>/var/backup/borg/client-host-1`
 - `ssh://<BORG_USER>@<BACKUP_SERVER_HOST>/var/backup/borg/client-host-2`
 
-## Notes
-
-- SSH password login is disabled; only public-key authentication is allowed.
-- Keep SSH host-key directories persistent to avoid fingerprint changes.
-- `sshd` runs as root inside the container by design.
-- Runtime hardening is enabled (`no-new-privileges`, dropped capabilities with minimal allowlist, `tmpfs` for `/run` and `/tmp`).
-- `.env`, `.env.prod`, and `.env.test` should remain local and untracked.
+## Examples
+### Logging
 
 <details>
-<summary>Example: Successful authentication and backup session logs</summary>
+<summary>Initial container startup logs</summary>
+
+This example shows the first log entries after the container has been built and started up, indicating that the SSH server is listening for connections.
+
+```
+synology-borg-server-sshd-1  | Server listening on 0.0.0.0 port 22.
+synology-borg-server-sshd-1  | Server listening on :: port 22.
+```
+
+</details>
+
+<details>
+<summary>Successful authentication and backup session logs</summary>
 
 This example shows log output from the container after a client host connects, authenticates, and initiates a backup. It demonstrates SSH key authentication and the `borg serve` command being executed for the client.
 
@@ -258,3 +265,11 @@ synology-borg-server-sshd-1  | Disconnected from user borg 192.168.0.1 port 3778
 ```
 
 </details>
+
+## Notes
+
+- SSH password login is disabled; only public-key authentication is allowed.
+- Keep SSH host-key directories persistent to avoid fingerprint changes.
+- `sshd` runs as root inside the container by design.
+- Runtime hardening is enabled (`no-new-privileges`, dropped capabilities with minimal allowlist, `tmpfs` for `/run` and `/tmp`).
+- `.env`, `.env.prod`, and `.env.test` should remain local and untracked.
