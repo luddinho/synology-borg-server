@@ -33,6 +33,14 @@ Motivation: Synology does not allow interactive shell login for non-admin users,
   - Borg repositories
 - A dedicated non-admin user on your NAS/server.
 
+## Compatibility
+
+This container works on **any Synology NAS model that supports Docker** (Container Manager), regardless of CPU architecture. Because the image is built directly on the NAS at runtime (`docker compose up --build`), Docker automatically uses the host's native architecture — `x86_64`, `aarch64`, or `armv7`.
+
+The Alpine base image and its packages (`openssh`, `borgbackup`) are available for all these architectures, so no pre-built image or cross-compilation is needed.
+
+> **Note:** Docker (Container Manager) itself requires a minimum DSM version and a supported model. If Docker runs on your NAS, this container will work.
+
 
 ## Start and Stop
 
