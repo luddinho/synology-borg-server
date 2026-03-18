@@ -202,6 +202,57 @@ Use two independent environment files and different Compose project names for st
 
 This gives strong separation for keys, repos, host fingerprints, and operational changes.
 
+### Image Behavior Across Prod/Test Stacks
+
+By default, the image *name* is the same (`synology-borg-server:local`), but the image *ID* (digest) can differ between prod and test.
+
+Why this happens:
+- Running `up --build` separately for prod and test performs two separate builds.
+- Each build can create a new image ID.
+- Existing containers keep the exact image digest they were created with.
+
+Default workflow (can produce different image IDs):
+
+```bash
+docker compose --env-file .env.prod -p borg-prod up -d --build
+docker compose --env-file .env.test -p borg-test up -d --build
+```
+
+Example `docker ps -a` output (different behavior by default):
+
+```text
+CONTAINER ID   IMAGE                       PORTS                           NAMES
+ec18ea89fb05   ef11a86a2243                0.0.0.0:2222->22/tcp            borg-prod-sshd-1
+39d1db502e93   synology-borg-server:local  0.0.0.0:2223->22/tcp            borg-test-sshd-1
+```
+
+If you want both stacks to use the exact same image digest, build once and recreate both containers without rebuilding:
+
+```bash
+# 1) Build once
+docker compose --env-file .env.prod -p borg-prod build sshd
+
+# 2) Recreate both stacks from that same built image
+docker compose --env-file .env.prod -p borg-prod up -d --force-recreate --no-build
+docker compose --env-file .env.test -p borg-test up -d --force-recreate --no-build
+```
+
+Example `docker ps -a` output (same behavior for both stacks):
+
+```text
+CONTAINER ID   IMAGE                       PORTS                           NAMES
+aa11bb22cc33   synology-borg-server:local  0.0.0.0:2222->22/tcp            borg-prod-sshd-1
+dd44ee55ff66   synology-borg-server:local  0.0.0.0:2223->22/tcp            borg-test-sshd-1
+```
+
+To verify digests directly:
+
+```bash
+docker inspect -f '{{.Name}} -> {{.Image}}' borg-prod-sshd-1 borg-test-sshd-1
+```
+
+> **Troubleshooting:** `docker ps -a` may still show a short image ID instead of `synology-borg-server:local` if that image digest currently has no local tag attached. In that case, rely on the digest check above as the source of truth.
+
 ## Client repository URL examples
 
 Recommended: keep repository URL without explicit port and define SSH details via `BORG_RSH`.
