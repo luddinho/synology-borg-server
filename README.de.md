@@ -15,9 +15,9 @@ Synology DSM erlaubt für Nicht-Admin-Benutzer keinen interaktiven Shell-Login, 
 - Speichert SSH-Host-Keys persistent, damit der SSH-Fingerprint stabil bleibt.
 - Speichert alle Borg-Repositories unter `/var/backup/borg`.
 
-## Über Alpine Linux 3.23
+## Über Alpine Linux
 
-Dieses Projekt verwendet Alpine Linux 3.23 als Basis-Image für den Container. Alpine Linux ist eine leichtgewichtige, sicherheitsorientierte Linux-Distribution, die auf Einfachheit und Effizienz ausgelegt ist. Sie wird häufig in Docker-Umgebungen eingesetzt, weil:
+Dieses Projekt verwendet Alpine Linux als Basis-Image für den Container. Alpine Linux ist eine leichtgewichtige, sicherheitsorientierte Linux-Distribution, die auf Einfachheit und Effizienz ausgelegt ist. Sie wird häufig in Docker-Umgebungen eingesetzt, weil:
 
 - Das Basis-Image ist extrem klein (unter 6MB), was Builds beschleunigt und die Angriffsfläche reduziert.
 - Alpine verwendet musl libc und busybox für Minimalismus und Performance.
@@ -26,11 +26,13 @@ Dieses Projekt verwendet Alpine Linux 3.23 als Basis-Image für den Container. A
 - Sicherheitsfeatures: minimale Privilegien, gehärtete Kernel-Optionen, reproduzierbare Builds.
 
 Wie es in Docker funktioniert:
-- Das offizielle `alpine:3.23`-Image bietet ein minimales Root-Dateisystem.
+- Das offizielle Alpine-Image bietet ein minimales Root-Dateisystem.
 - Es werden nur die benötigten Pakete installiert (z.B. `openssh-server`, `borgbackup`, `tzdata`) mit `apk add`.
 - Der Container startet schnell, benötigt wenig Speicher und ist einfach aktuell zu halten.
 
 Alpine eignet sich ideal für Szenarien, in denen eine sichere, schnelle und minimale Umgebung für Anwendungen benötigt wird.
+
+> **Aktuelle Version:** Dieses Projekt verwendet aktuell `alpine:3.23`. Siehe `context/Dockerfile` zum Prüfen oder Aktualisieren der Version. Verfügbare Releases: [hub.docker.com/_/alpine](https://hub.docker.com/_/alpine/tags)
 
 ## Repository-Struktur
 
@@ -89,7 +91,7 @@ Basierend auf den Umgebungsvariablen in `.env` (oder `.env.prod`/`.env.test`) ha
 
 **Wichtige Punkte:**
 - Jedes Verzeichnis und jede Datei wird vom Backup-Benutzer (definiert durch `BORG_UID:BORG_GID`) besessen.
-- Berechtigungen sind auf Zugriff beschränkt (750 für Verzeichnisse, 640 für Dateien).
+- Berechtigungen sind auf Zugriff beschränkt (750 für Verzeichnisse, 600 für `authorized_keys`).
 - SSH-Host-Keys sind persistent, damit sich der Fingerprint über Container-Neustarts nicht ändert.
 - Jedes Client-Repository ist isoliert und Zugriff wird über `authorized_keys` kontrolliert.
 
@@ -127,7 +129,7 @@ Führe diese Schritte aus, bevor du den Server das erste Mal startest:
    chown <BORG_UID>:<BORG_GID> <AUTHORIZED_KEYS_FILE>
 
    chmod 750 <BORG_REPOS_DIR>
-   chmod 640 <AUTHORIZED_KEYS_FILE>
+   chmod 600 <AUTHORIZED_KEYS_FILE>
    ```
 
 4. `authorized_keys` auf dem Host bearbeiten:

@@ -15,9 +15,9 @@ Synology DSM does not allow interactive shell login for non-admin users, and tho
 - Persists SSH host keys to keep the SSH fingerprint stable.
 - Stores all Borg repositories under `/var/backup/borg` (mounted to your NAS storage).
 
-## About Alpine Linux 3.23
+## About Alpine Linux
 
-This project uses Alpine Linux 3.23 as the base image for the container. Alpine Linux is a lightweight, security-focused Linux distribution designed for simplicity and efficiency. It is widely used in Docker environments because:
+This project uses Alpine Linux as the base image for the container. Alpine Linux is a lightweight, security-focused Linux distribution designed for simplicity and efficiency. It is widely used in Docker environments because:
 
 - The base image is extremely small (under 6MB), which speeds up builds and reduces attack surface.
 - Alpine uses musl libc and busybox for minimalism and performance.
@@ -26,11 +26,13 @@ This project uses Alpine Linux 3.23 as the base image for the container. Alpine 
 - Security features: minimal privileges, hardened kernel options, reproducible builds.
 
 How it works in Docker:
-- The official `alpine:3.23` image provides a minimal root filesystem.
+- The official Alpine image provides a minimal root filesystem.
 - You install only the packages you need (e.g., `openssh-server`, `borgbackup`, `tzdata`) using `apk add`.
 - The container starts quickly, uses little memory, and is easy to keep up-to-date.
 
 Alpine is ideal for scenarios where you want a secure, fast, and minimal environment for your application.
+
+> **Current version:** This project currently uses `alpine:3.23`. See `context/Dockerfile` to check or update the version. Available releases: [hub.docker.com/_/alpine](https://hub.docker.com/_/alpine/tags)
 
 ## Repository structure
 
@@ -89,7 +91,7 @@ Based on the environment variables in `.env` (or `.env.prod`/`.env.test`), your 
 
 **Key points:**
 - Each directory and file is owned by the backup user (defined by `BORG_UID:BORG_GID`).
-- Permissions are set to restrict access (750 for dirs, 640 for files).
+- Permissions are set to restrict access (750 for dirs, 600 for `authorized_keys`).
 - SSH host keys are persisted so the fingerprint stays stable across container restarts.
 - Each client repository is isolated and access-controlled via `authorized_keys`.
 
@@ -127,7 +129,7 @@ Follow these steps to prepare your environment before starting the server for th
    chown <BORG_UID>:<BORG_GID> <AUTHORIZED_KEYS_FILE>
 
    chmod 750 <BORG_REPOS_DIR>
-   chmod 640 <AUTHORIZED_KEYS_FILE>
+   chmod 600 <AUTHORIZED_KEYS_FILE>
    ```
 
 4. Edit `authorized_keys` on the host:
