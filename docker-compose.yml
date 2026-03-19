@@ -28,6 +28,7 @@ services:
       BORG_USER: ${BORG_USER}
       BORG_UID: ${BORG_UID}
       BORG_GID: ${BORG_GID}
+      SSH_LOG_LEVEL: ${SSH_LOG_LEVEL:-VERBOSE}
     volumes:
       # Persist SSH host keys/config to keep server fingerprint stable
       - ${SSH_CONFIG_DIR}:/etc/ssh

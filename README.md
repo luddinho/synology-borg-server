@@ -113,6 +113,7 @@ Follow these steps to prepare your environment before starting the server for th
 2. Adjust `.env` values:
    - `TZ`
    - `SSH_HOST_PORT`
+   - `SSH_LOG_LEVEL` (`VERBOSE` default, `DEBUG2`/`DEBUG3` for deeper troubleshooting)
    - `SSH_CONFIG_DIR`
    - `AUTHORIZED_KEYS_FILE`
    - `BORG_REPOS_DIR`
@@ -151,7 +152,7 @@ docker compose up -d --build
 Check logs:
 
 ```bash
-docker compose logs -f sshd
+docker compose logs -f --timestamps sshd
 ```
 
 Stop:
@@ -189,8 +190,8 @@ Use two independent environment files and different Compose project names for st
 4. Follow logs:
 
    ```bash
-   docker compose --env-file .env.prod -p borg-prod logs -f sshd
-   docker compose --env-file .env.test -p borg-test logs -f sshd
+   docker compose --env-file .env.prod -p borg-prod logs -f --timestamps sshd
+   docker compose --env-file .env.test -p borg-test logs -f --timestamps sshd
    ```
 
 5. Stop stacks:
@@ -279,6 +280,8 @@ Example repository URLs:
 
 ## Examples
 ### Logging
+
+Increase SSH verbosity by setting `SSH_LOG_LEVEL` in your environment file. Use `VERBOSE` for normal operation and `DEBUG2`/`DEBUG3` for detailed troubleshooting.
 
 <details>
 <summary>Initial container startup logs</summary>

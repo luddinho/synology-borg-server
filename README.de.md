@@ -113,6 +113,7 @@ Führe diese Schritte aus, bevor du den Server das erste Mal startest:
 2. `.env` anpassen:
    - `TZ`
    - `SSH_HOST_PORT`
+   - `SSH_LOG_LEVEL` (`VERBOSE` Standard, `DEBUG2`/`DEBUG3` für tiefere Analyse)
    - `SSH_CONFIG_DIR`
    - `AUTHORIZED_KEYS_FILE`
    - `BORG_REPOS_DIR`
@@ -151,7 +152,7 @@ docker compose up -d --build
 Logs anzeigen:
 
 ```bash
-docker compose logs -f sshd
+docker compose logs -f --timestamps sshd
 ```
 
 Stoppen:
@@ -188,8 +189,8 @@ Nutze zwei getrennte Environment-Dateien und unterschiedliche Compose-Projektnam
 4. Logs je Umgebung prüfen:
 
    ```bash
-   docker compose --env-file .env.prod -p borg-prod logs -f sshd
-   docker compose --env-file .env.test -p borg-test logs -f sshd
+   docker compose --env-file .env.prod -p borg-prod logs -f --timestamps sshd
+   docker compose --env-file .env.test -p borg-test logs -f --timestamps sshd
    ```
 
 5. Stacks stoppen:
@@ -276,6 +277,8 @@ Beispiel-Repository-URLs:
 
 ## Beispiele
 ## Protokollierung
+
+Die SSH-Log-Detailtiefe steuerst du über `SSH_LOG_LEVEL` in der Environment-Datei. Für den Normalbetrieb ist `VERBOSE` geeignet, für detailliertes Troubleshooting `DEBUG2` oder `DEBUG3`.
 
 <details>
 <summary>Erste Log-Einträge beim Container-Start</summary>

@@ -24,6 +24,15 @@ chmod 600 "/home/${BORG_USER}/.ssh/authorized_keys"
 install -d -m 755 /run/sshd
 install -d -m 755 /var/empty
 
+ssh_log_level="${SSH_LOG_LEVEL:-VERBOSE}"
+case "$ssh_log_level" in
+  QUIET|FATAL|ERROR|INFO|VERBOSE|DEBUG|DEBUG1|DEBUG2|DEBUG3) ;;
+  *)
+    echo "Invalid SSH_LOG_LEVEL '$ssh_log_level'. Allowed values: QUIET,FATAL,ERROR,INFO,VERBOSE,DEBUG,DEBUG1,DEBUG2,DEBUG3" >&2
+    exit 1
+    ;;
+esac
+
 if [ ! -f /etc/ssh/ssh_host_ed25519_key ]; then
   ssh-keygen -A
 fi
@@ -41,7 +50,7 @@ PubkeyAuthentication yes
 PermitRootLogin no
 AllowUsers ${BORG_USER}
 AuthorizedKeysFile /home/${BORG_USER}/.ssh/authorized_keys
-LogLevel VERBOSE
+LogLevel ${ssh_log_level}
 PidFile /run/sshd.pid
 ChrootDirectory none
 EOF
