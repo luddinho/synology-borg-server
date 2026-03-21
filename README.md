@@ -9,6 +9,8 @@ Lightweight BorgBackup server running in Docker with SSH key-based authenticatio
 ## Motivation
 Synology DSM does not allow interactive shell login for non-admin users, and those users cannot use the package-installed Borg as a Borg server. This container helps provide a dedicated Borg server on a Synology NAS.
 
+> **Note:** This container is not limited to Synology NAS. It can be used on any NAS (e.g., UGREEN, QNAP, TerraMaster) or Linux server that supports Docker Engine. See the [Compatibility](#compatibility) section for details.
+
 ## What this project does
 
 - Runs `sshd` and `borgbackup` in an Alpine-based container.
