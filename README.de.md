@@ -1,5 +1,7 @@
 # synology-borg-server
 
+<p align="center"><img src="logo.svg" width="200" alt="synology-borg-server Logo"/></p>
+
 **[🇬🇧 English Version](README.md)**
 
 Einfacher BorgBackup-Server in Docker mit SSH-Schlüssel-Authentifizierung und pro Client eingeschränkten Repository-Pfaden.

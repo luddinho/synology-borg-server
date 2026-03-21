@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1a3254"/>
+      <stop offset="100%" stop-color="#0a1520"/>
+    </linearGradient>
+    <!-- NAS: x=96 y=76 w=320 h=360 rx=20  centred in 512x512 canvas -->
+    <!-- right=416  bottom=436  corner-arc-centre=(396,416) -->
+    <linearGradient id="nasbody" x1="0" y1="76" x2="0" y2="436" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e3f6e"/>
+      <stop offset="100%" stop-color="#0e2240"/>
+    </linearGradient>
+    <linearGradient id="strip" x1="0" y1="76" x2="0" y2="146" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#253f66"/>
+      <stop offset="100%" stop-color="#1a2f4f"/>
+    </linearGradient>
+    <linearGradient id="driveface" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#122035"/>
+      <stop offset="100%" stop-color="#0c1826"/>
+    </linearGradient>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow_sm" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="nasClip">
+      <rect x="96" y="76" width="320" height="360" rx="20"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="90" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="90" fill="none" stroke="#284870" stroke-width="2" opacity="0.5"/>
+
+  <!-- NAS chassis  x=96 y=76 w=320 h=360 rx=20 -->
+  <rect x="96" y="76" width="320" height="360" rx="20" fill="url(#nasbody)"/>
+  <rect x="98" y="78" width="316" height="3" rx="1.5" fill="#4a80b0" opacity="0.35" clip-path="url(#nasClip)"/>
+
+  <!-- Top strip: clipped to NAS shape to avoid corner seam artifacts -->
+  <rect x="96" y="76"  width="320" height="70" fill="url(#strip)" clip-path="url(#nasClip)"/>
+  <rect x="96" y="128" width="320" height="18" fill="url(#strip)" clip-path="url(#nasClip)"/>
+  <line x1="96" y1="146" x2="416" y2="146" stroke="#3a7fc0" stroke-width="1.5" opacity="0.6" clip-path="url(#nasClip)"/>
+  <rect x="97" y="77" width="318" height="358" rx="19" fill="none" stroke="#3a7fc0" stroke-width="2" opacity="0.85"/>
+
+  <!-- Borg castle emblem (slightly reduced to keep clear top padding inside NAS) -->
+  <g transform="translate(0 2) translate(256 111) scale(0.94) translate(-256 -111)">
+  <!-- Left wing -->
+  <rect x="211" y="84"  width="8"  height="12" rx="2" fill="#7ecef5" opacity="0.92"/>
+  <rect x="223" y="84"  width="8"  height="12" rx="2" fill="#7ecef5" opacity="0.92"/>
+  <rect x="207" y="95"  width="30" height="40" rx="2" fill="#7ecef5" opacity="0.92"/>
+  <rect x="216" y="108" width="9"  height="14" rx="1" fill="#0c1b30"/>
+  <ellipse cx="220.5" cy="108" rx="4.5" ry="3" fill="#0c1b30"/>
+  <!-- Center tower -->
+  <rect x="240" y="75"  width="8"  height="14" rx="2" fill="#7ecef5" opacity="0.92"/>
+  <rect x="252" y="75"  width="8"  height="14" rx="2" fill="#7ecef5" opacity="0.92"/>
+  <rect x="264" y="75"  width="8"  height="14" rx="2" fill="#7ecef5" opacity="0.92"/>
+  <rect x="237" y="88"  width="39" height="47" rx="2" fill="#7ecef5" opacity="0.92"/>
+  <rect x="247" y="112" width="19" height="23" fill="#0c1b30"/>
+  <ellipse cx="256.5" cy="112" rx="9.5" ry="6" fill="#0c1b30"/>
+  <!-- Right wing -->
+  <rect x="279" y="84"  width="8"  height="12" rx="2" fill="#7ecef5" opacity="0.92"/>
+  <rect x="291" y="84"  width="8"  height="12" rx="2" fill="#7ecef5" opacity="0.92"/>
+  <rect x="276" y="95"  width="30" height="40" rx="2" fill="#7ecef5" opacity="0.92"/>
+  <rect x="286" y="108" width="9"  height="14" rx="1" fill="#0c1b30"/>
+  <ellipse cx="290.5" cy="108" rx="4.5" ry="3" fill="#0c1b30"/>
+  <!-- Castle base line -->
+  <rect x="203" y="135" width="107" height="5" rx="2.5" fill="#4a9ed0" opacity="0.55"/>
+  </g>
+
+  <!-- Power button -->
+  <circle cx="388" cy="111" r="16" fill="#0c1b30" stroke="#2a5a8c" stroke-width="2"/>
+  <path d="M 388 97 A 11 11 0 1 1 377.5 104.5" fill="none" stroke="#4aaee0" stroke-width="2.8" stroke-linecap="round" filter="url(#glow_sm)"/>
+  <line x1="388" y1="97" x2="388" y2="104" stroke="#4aaee0" stroke-width="2.8" stroke-linecap="round" filter="url(#glow_sm)"/>
+
+  <!-- BAY 1  y=154 -->
+  <rect x="108"  y="154" width="296" height="54" rx="6" fill="#0c1b2e"/>
+  <rect x="114"  y="159" width="252" height="44" rx="5" fill="url(#driveface)"/>
+  <rect x="119"  y="164" width="202" height="7"  rx="3" fill="#162840"/>
+  <rect x="119"  y="187" width="202" height="7"  rx="2" fill="#0a1520"/>
+  <rect x="332" y="163" width="28"  height="26" rx="5" fill="#162d48"/>
+  <rect x="337" y="168" width="18"  height="12" rx="3" fill="#0c1922"/>
+  <circle cx="383" cy="181" r="7" fill="#3dd68c" opacity="0.9" filter="url(#glow)"/>
+  <circle cx="383" cy="181" r="3.5" fill="#b0fad8"/>
+
+  <!-- BAY 2  y=213 -->
+  <rect x="108"  y="213" width="296" height="54" rx="6" fill="#0c1b2e"/>
+  <rect x="114"  y="218" width="252" height="44" rx="5" fill="url(#driveface)"/>
+  <rect x="119"  y="223" width="202" height="7"  rx="3" fill="#162840"/>
+  <rect x="119"  y="246" width="202" height="7"  rx="2" fill="#0a1520"/>
+  <rect x="332" y="222" width="28"  height="26" rx="5" fill="#162d48"/>
+  <rect x="337" y="227" width="18"  height="12" rx="3" fill="#0c1922"/>
+  <circle cx="383" cy="240" r="7" fill="#3dd68c" opacity="0.9" filter="url(#glow)"/>
+  <circle cx="383" cy="240" r="3.5" fill="#b0fad8"/>
+
+  <!-- BAY 3  y=272  amber = actively writing -->
+  <rect x="108"  y="272" width="296" height="54" rx="6" fill="#0c1b2e"/>
+  <rect x="114"  y="277" width="252" height="44" rx="5" fill="url(#driveface)"/>
+  <rect x="119"  y="282" width="202" height="7"  rx="3" fill="#162840"/>
+  <rect x="119"  y="305" width="202" height="7"  rx="2" fill="#0a1520"/>
+  <rect x="332" y="281" width="28"  height="26" rx="5" fill="#162d48"/>
+  <rect x="337" y="286" width="18"  height="12" rx="3" fill="#0c1922"/>
+  <circle cx="383" cy="299" r="7" fill="#f7b731" opacity="0.95" filter="url(#glow)"/>
+  <circle cx="383" cy="299" r="3.5" fill="#fde68a"/>
+
+  <!-- BAY 4  y=331 -->
+  <rect x="108"  y="331" width="296" height="54" rx="6" fill="#0c1b2e"/>
+  <rect x="114"  y="336" width="252" height="44" rx="5" fill="url(#driveface)"/>
+  <rect x="119"  y="341" width="202" height="7"  rx="3" fill="#162840"/>
+  <rect x="119"  y="364" width="202" height="7"  rx="2" fill="#0a1520"/>
+  <rect x="332" y="340" width="28"  height="26" rx="5" fill="#162d48"/>
+  <rect x="337" y="345" width="18"  height="12" rx="3" fill="#0c1922"/>
+  <circle cx="383" cy="358" r="7" fill="#3dd68c" opacity="0.9" filter="url(#glow)"/>
+  <circle cx="383" cy="358" r="3.5" fill="#b0fad8"/>
+
+  <!-- Bottom status bar  y=394 -->
+  <rect x="108"  y="394" width="296" height="24" rx="6" fill="#0c1b2e"/>
+  <circle cx="128" cy="406" r="5"   fill="#4aaee0" opacity="0.9" filter="url(#glow_sm)"/>
+  <circle cx="128" cy="406" r="2.5" fill="#c0e8ff"/>
+  <circle cx="146" cy="406" r="5"   fill="#3dd68c" opacity="0.85" filter="url(#glow_sm)"/>
+  <circle cx="146" cy="406" r="2.5" fill="#a0f9cc"/>
+  <rect x="366" y="396" width="24" height="16" rx="3" fill="#162840" stroke="#2a5a8c" stroke-width="1.5"/>
+  <rect x="370" y="400" width="16" height="8"  rx="1.5" fill="#0a1520"/>
+  <line x1="378" y1="400" x2="378" y2="408" stroke="#3a7aaa" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="374" y1="403" x2="382" y2="403" stroke="#3a7aaa" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="374" cy="401" r="1.5" fill="#3a7aaa"/>
+  <circle cx="382" cy="401" r="1.5" fill="#3a7aaa"/>
+
+  <!-- DOCKER BADGE
+       NAS bottom-right corner arc centre = (96+320-20, 76+360-20) = (396, 416)  rx=20
+       Badge centre on outer arc at 45deg = (396+20*cos45, 416+20*sin45) = (410, 430)
+       Badge r=43  extents: x=367..453  y=387..473 — fully inside 512x512 canvas -->
+  <circle cx="410" cy="430" r="45" fill="#061018" opacity="0.5"/>
+  <circle cx="410" cy="430" r="43" fill="#0d2038"/>
+  <circle cx="410" cy="430" r="43" fill="none" stroke="#1a72c4" stroke-width="2.5"/>
+  <!-- container grid 3x2  (top-left x=378, y=406) -->
+  <rect x="378" y="406" width="10" height="8" rx="1.5" fill="#2496ed"/>
+  <rect x="390" y="406" width="10" height="8" rx="1.5" fill="#2496ed"/>
+  <rect x="402" y="406" width="10" height="8" rx="1.5" fill="#2496ed"/>
+  <rect x="378" y="416" width="10" height="8" rx="1.5" fill="#2496ed"/>
+  <rect x="390" y="416" width="10" height="8" rx="1.5" fill="#2496ed"/>
+  <rect x="402" y="416" width="10" height="8" rx="1.5" fill="#2496ed"/>
+  <line x1="378" y1="414.5" x2="388" y2="414.5" stroke="#0d2038" stroke-width="1"/>
+  <line x1="390" y1="414.5" x2="400" y2="414.5" stroke="#0d2038" stroke-width="1"/>
+  <line x1="402" y1="414.5" x2="412" y2="414.5" stroke="#0d2038" stroke-width="1"/>
+  <!-- whale body -->
+  <path d="M 376 426 Q 374 438 384 443 L 428 443 Q 436 443 438 437 Q 440 431 432 428 Q 430 424 424 425 L 376 426 Z" fill="#2496ed"/>
+  <!-- tail -->
+  <path d="M 426 429 Q 436 424 442 417 Q 438 428 442 437 Q 436 433 426 429 Z" fill="#2496ed"/>
+  <!-- eye -->
+  <circle cx="386" cy="434" r="2.2" fill="#0d2038"/>
+  <circle cx="386" cy="434" r="0.9" fill="white" opacity="0.7"/>
+  <!-- spout -->
+  <path d="M 399 425 Q 397 418 401 414 Q 405 418 403 425" fill="none" stroke="#5bb8f5" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="401" cy="413" r="1.8" fill="#5bb8f5" opacity="0.8"/>
+
+</svg>
