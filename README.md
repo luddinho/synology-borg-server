@@ -47,6 +47,12 @@ Running the Borg server in a Docker container with non-admin user support and re
 8. **Easy Rollback and Recovery:**
    - If something goes wrong, you can easily revert to a previous container image or configuration without affecting the host system.
 
+9. **Runtime Hardening:**
+   - The container runs with `no-new-privileges`, a minimal capability allowlist, and `tmpfs` mounts for `/run` and `/tmp`, reducing the attack surface at runtime.
+
+10. **Secrets Stay Local:**
+    - `.env`, `.env.prod`, and `.env.test` files are kept local and untracked, ensuring sensitive configuration never ends up in version control.
+
 This approach combines security, flexibility, and ease of use, making it ideal for multi-user backup scenarios on shared NAS devices.
 
 ## About Alpine Linux
@@ -493,5 +499,3 @@ synology-borg-server-sshd-1  | Disconnected from user borg 192.168.0.1 port 3778
 - SSH password login is disabled; only public-key authentication is allowed.
 - Keep SSH host-key directories persistent to avoid fingerprint changes.
 - `sshd` runs as root inside the container by design.
-- Runtime hardening is enabled (`no-new-privileges`, dropped capabilities with minimal allowlist, `tmpfs` for `/run` and `/tmp`).
-- `.env`, `.env.prod`, and `.env.test` should remain local and untracked.

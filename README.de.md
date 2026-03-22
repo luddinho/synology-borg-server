@@ -47,6 +47,12 @@ Wenn der Borg-Server in einem Docker-Container läuft, der von einem Nicht-Admin
 8. **Einfache Wiederherstellung:**
    - Bei Problemen kann einfach auf ein vorheriges Container-Image oder eine frühere Konfiguration zurückgerollt werden, ohne das Hostsystem zu beeinträchtigen.
 
+9. **Laufzeit-Hardening:**
+   - Der Container läuft mit `no-new-privileges`, einer minimalen Capability-Whitelist und `tmpfs`-Mounts für `/run` und `/tmp`, was die Angriffsfläche zur Laufzeit reduziert.
+
+10. **Secrets bleiben lokal:**
+    - `.env`-, `.env.prod`- und `.env.test`-Dateien werden lokal und unverfolgt gehalten, damit sensible Konfiguration nie in die Versionskontrolle gelangt.
+
 Dieses Konzept vereint Sicherheit, Flexibilität und Benutzerfreundlichkeit - ideal für Multi-User-Backups auf gemeinsam genutzten NAS-Systemen.
 
 ## Über Alpine Linux
@@ -492,5 +498,3 @@ synology-borg-server-sshd-1  | Disconnected from user borg 192.168.0.1 port 3778
 - SSH-Passwort-Login ist deaktiviert; nur Public-Key-Authentifizierung ist erlaubt.
 - Halte die SSH-Host-Key-Verzeichnisse persistent, um Fingerprint-Änderungen zu vermeiden.
 - `sshd` läuft im Container absichtlich als root.
-- Laufzeit-Hardening ist aktiviert (`no-new-privileges`, reduzierte Capabilities mit Minimal-Whitelist, `tmpfs` für `/run` und `/tmp`).
-- `.env`, `.env.prod` und `.env.test` sollten lokal und unverfolgt bleiben.
