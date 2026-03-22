@@ -37,6 +37,8 @@ Wie es in Docker funktioniert:
 Alpine eignet sich ideal für Szenarien, in denen eine sichere, schnelle und minimale Umgebung für Anwendungen benötigt wird.
 
 > **Aktuelle Version:** Dieses Projekt verwendet aktuell `alpine:3.23`. Siehe `context/Dockerfile` zum Prüfen oder Aktualisieren der Version. Verfügbare Releases: [hub.docker.com/_/alpine](https://hub.docker.com/_/alpine/tags)
+>
+> **BorgBackup-Paket unter Alpine 3.23:** Dieses Projekt verwendet aktuell `borgbackup` in Version `1.4.3-r0` aus Alpine `v3.23`. Paket-Referenz: [pkgs.alpinelinux.org (borgbackup, v3.23)](https://pkgs.alpinelinux.org/packages?name=borgbackup&branch=v3.23&repo=&arch=&origin=&flagged=&maintainer=)
 
 ## Repository-Struktur
 
