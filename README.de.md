@@ -292,28 +292,28 @@ docker inspect -f '{{.Name}} -> {{.Image}}' borg-prod-sshd-1 borg-test-sshd-1
 Sobald der Borg-Server installiert und konfiguriert ist, kann er Backup-Jobs von beliebigen Clients per SSH-Schlüssel-Authentifizierung und Borg-Protokoll über eine `rsh`-Verbindung empfangen. Als Client kann jedes System mit installiertem BorgBackup und Netzwerkzugriff auf den SSH-Port des Servers dienen.
 
 ```
-  ┌──────────────────────────┐             ┌──────────────────────────────────────────────────┐
-  │      Client Host A       │             │               NAS / Linux-Server                 │
-  ├──────────────────────────┤             │                                                  │
-  │  $ borg create / prune   │             │  ┌────────────────────────────────────────────┐  │
-  │  BORG_RSH=               │             │  │         Docker Container                   │  │
-  │   "ssh -p 2222           ├─SSH:2222───►│  │  sshd [:22]     borgbackup                 │  │
-  │    -i ~/.ssh/key_a"      │             │  │                                            │  │
-  └──────────────────────────┘             │  │  authorized_keys                           │  │
-                                           │  │  └─► borg serve --restrict-to-path         │  │
-  ┌──────────────────────────┐             │  │                                            │  │
-  │      Client Host B       │             │  │  /var/backup/borg/                         │  │
-  │                          │             │  │  ├── client-host-a/  (Repo A)              │  │
-  │  $ borg create / prune   ├─SSH:2222───►│  │  └── client-host-b/  (Repo B)              │  │
-  │  BORG_RSH=               │             │  └──────────────────────┬─────────────────────┘  │
-  │   "ssh -p 2222           │             │                         │ Volume-Mount           │
-  │    -i ~/.ssh/key_b"      │             │  ┌──────────────────────▼─────────────────────┐  │
-  └──────────────────────────┘             │  │              NAS-Speicher                  │  │
-                                           │  │  /volume1/borg-backups/repos/              │  │
-                                           │  │  ├── client-host-a/  (Repo A)              │  │
-                                           │  │  └── client-host-b/  (Repo B)              │  │
-                                           │  └────────────────────────────────────────────┘  │
-                                           └──────────────────────────────────────────────────┘
+   ┌──────────────────────────┐             ┌────────────────────────────────────────────┐
+   │      Client Host A       │             │          NAS / Linux-Server                │
+   ├──────────────────────────┤             │                                            │
+   │  $ borg create / prune   │             │  ┌──────────────────────────────────────┐  │
+   │  BORG_RSH=               │             │  │         Docker Container             │  │
+   │   "ssh -p 2222           ├─SSH:2222───►│  │  sshd [:22]     borgbackup           │  │
+   │    -i ~/.ssh/key_a"      │             │  │                                      │  │
+   └──────────────────────────┘             │  │  authorized_keys                     │  │
+                                            │  │  └─► borg serve --restrict-to-path   │  │
+   ┌──────────────────────────┐             │  │                                      │  │
+   │      Client Host B       │             │  │  /var/backup/borg/                   │  │
+   │                          │             │  │  ├── client-host-a/ (Repo A)         │  │
+   │  $ borg create / prune   ├─SSH:2222───►│  │  └── client-host-b/ (Repo B)         │  │
+   │  BORG_RSH=               │             │  └──────────────────┬───────────────────┘  │
+   │   "ssh -p 2222           │             │                     │ Volume-Mount         │
+   │    -i ~/.ssh/key_b"      │             │  ┌──────────────────▼───────────────────┐  │
+   └──────────────────────────┘             │  │              NAS-Speicher            │  │
+                                            │  │  /volume1/borg-backups/repos/        │  │
+                                            │  │  ├── client-host-a/ (Repo A)         │  │
+                                            │  │  └── client-host-b/ (Repo B)         │  │
+                                            │  └──────────────────────────────────────┘  │
+                                            └────────────────────────────────────────────┘
 ```
 
 **Ablauf:**
