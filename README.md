@@ -19,6 +19,36 @@ Synology DSM does not allow interactive shell login for non-admin users, and tho
 - Persists SSH host keys to keep the SSH fingerprint stable.
 - Stores all Borg repositories under `/var/backup/borg` (mounted to your NAS storage).
 
+## Advantages of this Project
+Running the Borg server in a Docker container with non-admin user support and restrict paths protection offers several advantages:
+
+1. **Enhanced Security:**
+   - The container runs as a non-root (non-admin) user, reducing the risk of privilege escalation and limiting the impact of potential vulnerabilities.
+   - SSH key authentication and the restrict option in authorized_keys ensure clients can only access their assigned backup repositories, preventing unauthorized access to other data.
+
+2. **Isolation:**
+   - Docker containers isolate the Borg server from the host system and other services, minimizing the risk of interference or accidental data exposure.
+
+3. **Portability:**
+   - The solution works on any NAS or server with Docker support (Synology, QNAP, UGREEN, TerraMaster, etc.), making it easy to deploy and migrate.
+
+4. **Easy Updates and Maintenance:**
+   - Updates to Borg or its dependencies can be managed by rebuilding or updating the container, without affecting the host system.
+
+5. **Simplified Permissions:**
+   - No need to grant admin/root access to backup users. Each client operates with minimal privileges, only within their designated repository.
+
+6. **Consistent Environment:**
+   - The container ensures a consistent runtime environment (Alpine Linux, specific Borg version), reducing compatibility issues across different NAS platforms.
+
+7. **Fine-grained Access Control:**
+   - The restrict option in SSH authorized_keys enforces strict path access, so each client can only read/write to their own backup directory, even if they try to access other paths.
+
+8. **Easy Rollback and Recovery:**
+   - If something goes wrong, you can easily revert to a previous container image or configuration without affecting the host system.
+
+This approach combines security, flexibility, and ease of use, making it ideal for multi-user backup scenarios on shared NAS devices.
+
 ## About Alpine Linux
 
 This project uses Alpine Linux as the base image for the container. Alpine Linux is a lightweight, security-focused Linux distribution designed for simplicity and efficiency. It is widely used in Docker environments because:

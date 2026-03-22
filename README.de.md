@@ -19,6 +19,36 @@ Synology DSM erlaubt für Nicht-Admin-Benutzer keinen interaktiven Shell-Login, 
 - Speichert SSH-Host-Keys persistent, damit der SSH-Fingerprint stabil bleibt.
 - Speichert alle Borg-Repositories unter `/var/backup/borg`.
 
+## Vorteile dieses Projekts
+Wenn der Borg-Server in einem Docker-Container läuft, der von einem Nicht-Admin-Benutzer mit aktiviertem restrict-Pfadschutz genutzt werden kann, ergeben sich folgende Vorteile:
+
+1. **Erhöhte Sicherheit:**
+   - Der Container läuft als Nicht-Root-Benutzer, wodurch das Risiko von Rechteausweitungen und Sicherheitslücken minimiert wird.
+   - Die Authentifizierung per SSH-Schlüssel und die restrict-Option in authorized_keys sorgen dafür, dass jeder Client nur auf sein eigenes Backup-Repository zugreifen kann.
+
+2. **Isolierung:**
+   - Docker-Container trennen den Borg-Server vom Hostsystem und anderen Diensten, was das Risiko von Störungen oder ungewolltem Datenzugriff verringert.
+
+3. **Portabilität:**
+   - Die Lösung funktioniert auf jedem NAS oder Server mit Docker-Unterstützung (z.B. Synology, QNAP, UGREEN, TerraMaster) und ist einfach zu deployen oder zu migrieren.
+
+4. **Einfache Updates und Wartung:**
+   - Updates für Borg oder Abhängigkeiten werden durch ein einfaches Aktualisieren oder Neubauen des Containers durchgeführt, ohne das Hostsystem zu beeinflussen.
+
+5. **Vereinfachte Rechtevergabe:**
+   - Es ist nicht nötig, Backup-Nutzern Admin- oder Root-Rechte zu geben. Jeder Client arbeitet mit minimalen Rechten nur in seinem eigenen Repository.
+
+6. **Konsistente Umgebung:**
+   - Der Container stellt eine einheitliche Laufzeitumgebung (Alpine Linux, spezifische Borg-Version) bereit, was Kompatibilitätsprobleme auf verschiedenen NAS-Plattformen reduziert.
+
+7. **Feingranulare Zugriffskontrolle:**
+   - Die restrict-Option in authorized_keys erzwingt, dass jeder Client ausschließlich auf sein eigenes Backup-Verzeichnis zugreifen kann - auch bei Manipulationsversuchen.
+
+8. **Einfache Wiederherstellung:**
+   - Bei Problemen kann einfach auf ein vorheriges Container-Image oder eine frühere Konfiguration zurückgerollt werden, ohne das Hostsystem zu beeinträchtigen.
+
+Dieses Konzept vereint Sicherheit, Flexibilität und Benutzerfreundlichkeit - ideal für Multi-User-Backups auf gemeinsam genutzten NAS-Systemen.
+
 ## Über Alpine Linux
 
 Dieses Projekt verwendet Alpine Linux als Basis-Image für den Container. Alpine Linux ist eine leichtgewichtige, sicherheitsorientierte Linux-Distribution, die auf Einfachheit und Effizienz ausgelegt ist. Sie wird häufig in Docker-Umgebungen eingesetzt, weil:
