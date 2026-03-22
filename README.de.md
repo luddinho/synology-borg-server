@@ -257,9 +257,109 @@ docker inspect -f '{{.Name}} -> {{.Image}}' borg-prod-sshd-1 borg-test-sshd-1
 
 > **Troubleshooting:** `docker ps -a` kann weiterhin eine kurze Image-ID statt `synology-borg-server:local` anzeigen, wenn an diesem Digest lokal aktuell kein Tag hängt. Nutze in diesem Fall die obige Digest-Prüfung als verlässliche Quelle.
 
+## Wie Clients sich verbinden
+
+Sobald der Borg-Server installiert und konfiguriert ist, kann er Backup-Jobs von beliebigen Clients per SSH-Schlüssel-Authentifizierung und Borg-Protokoll über eine `rsh`-Verbindung empfangen. Als Client kann jedes System mit installiertem BorgBackup und Netzwerkzugriff auf den SSH-Port des Servers dienen.
+
+```
+  ┌──────────────────────────┐             ┌──────────────────────────────────────────────────┐
+  │      Client Host A       │             │               NAS / Linux-Server                 │
+  ├──────────────────────────┤             │                                                  │
+  │  $ borg create / prune   │             │  ┌────────────────────────────────────────────┐  │
+  │  BORG_RSH=               │             │  │         Docker Container                   │  │
+  │   "ssh -p 2222           ├─SSH:2222───►│  │  sshd [:22]     borgbackup                 │  │
+  │    -i ~/.ssh/key_a"      │             │  │                                            │  │
+  └──────────────────────────┘             │  │  authorized_keys                           │  │
+                                           │  │  └─► borg serve --restrict-to-path         │  │
+  ┌──────────────────────────┐             │  │                                            │  │
+  │      Client Host B       │             │  │  /var/backup/borg/                         │  │
+  │                          │             │  │  ├── client-host-a/  (Repo A)              │  │
+  │  $ borg create / prune   ├─SSH:2222───►│  │  └── client-host-b/  (Repo B)              │  │
+  │  BORG_RSH=               │             │  └──────────────────────┬─────────────────────┘  │
+  │   "ssh -p 2222           │             │                         │ Volume-Mount           │
+  │    -i ~/.ssh/key_b"      │             │  ┌──────────────────────▼─────────────────────┐  │
+  └──────────────────────────┘             │  │              NAS-Speicher                  │  │
+                                           │  │  /volume1/borg-backups/repos/              │  │
+                                           │  │  ├── client-host-a/  (Repo A)              │  │
+                                           │  │  └── client-host-b/  (Repo B)              │  │
+                                           │  └────────────────────────────────────────────┘  │
+                                           └──────────────────────────────────────────────────┘
+```
+
+**Ablauf:**
+- Der Client führt Borg-Befehle aus (z.B. `borg create`, `borg extract`) und setzt `BORG_RSH` auf SSH mit dem passenden Schlüssel.
+- Der Server authentifiziert den Client per SSH-Schlüssel und beschränkt den Zugriff auf das zugewiesene Repository.
+- Die gesamte Datenübertragung erfolgt verschlüsselt über SSH und wird auf dem angegebenen Volume-Mount gespeichert.
+
+### Vollständiger Ablauf (erste Client-Einrichtung)
+
+1. SSH-Schlüsselpaar auf dem Client erzeugen (empfohlen: `ed25519`):
+
+   ```bash
+   ssh-keygen -t ed25519 -f ~/.ssh/borg_client_ed25519 -C "client-host-a-key"
+   ```
+
+2. Öffentlichen Schlüssel ausgeben:
+
+   ```bash
+   cat ~/.ssh/borg_client_ed25519.pub
+   ```
+
+3. Öffentlichen Schlüssel mit Einschränkung in `authorized_keys` auf dem Server eintragen:
+
+   ```text
+   command="borg serve --restrict-to-path /var/backup/borg/client-host-a",restrict ssh-ed25519 AAAA...dein-public-key... client-host-a-key
+   ```
+
+4. Container neu laden, damit die Änderung übernommen wird.
+   Hinweis: Nach jeder Änderung an `authorized_keys` den Container neu starten oder neu erstellen. Ein Rebuild ist nicht erforderlich.
+
+   ```bash
+   docker compose up -d --build
+   # oder
+   docker compose restart sshd
+   ```
+
+5. Repository vom Client aus initialisieren:
+
+   ```bash
+   export BORG_RSH='ssh -p <SSH_PORT> -i ~/.ssh/borg_client_ed25519 -o IdentitiesOnly=yes'
+   borg init --encryption=repokey-blake2 ssh://<BORG_USER>@<BACKUP_SERVER_HOST>/var/backup/borg/client-host-a
+   ```
+
+6. Erstes Backup erstellen:
+
+   ```bash
+   borg create --stats ssh://<BORG_USER>@<BACKUP_SERVER_HOST>/var/backup/borg/client-host-a::erstes-backup-$(date +%Y-%m-%d) /pfad/zu/deinen/daten
+   ```
+
+7. Repository-Informationen prüfen:
+
+   ```bash
+   borg info ssh://<BORG_USER>@<BACKUP_SERVER_HOST>/var/backup/borg/client-host-a
+   ```
+
+8. Verfügbare Archive im Repository auflisten:
+
+   ```bash
+   borg list ssh://<BORG_USER>@<BACKUP_SERVER_HOST>/var/backup/borg/client-host-a
+   ```
+
+9. Inhalt des erstellten Archivs anzeigen:
+
+   ```bash
+   borg list ssh://<BORG_USER>@<BACKUP_SERVER_HOST>/var/backup/borg/client-host-a::erstes-backup-<DATUM>
+   ```
+
+---
+
 ## Beispiel-Repository-URLs für Clients
 
 Empfohlen: Repository-URL ohne expliziten Port nutzen und SSH-Details über `BORG_RSH` setzen.
+`BORG_RSH` in der Client-Umgebung definieren, um den SSH-Befehl mit dem richtigen Port und der passenden Identitätsdatei anzugeben. Das hält die Borg-Befehle übersichtlich und konsistent.
+Die Variable `BORG_RSH` in der Shell-Konfiguration oder vor dem Ausführen von Borg-Befehlen exportieren und das Standard-SSH-URL-Format für Repositories verwenden. Der Server verarbeitet die Verbindung anhand der angegebenen SSH-Optionen.
+
+Beispiel für das Setzen von `BORG_RSH` und das Initialisieren eines Repositories:
 
 **Bash/Zsh:**
 ```bash
@@ -280,7 +380,7 @@ Beispiel-Repository-URLs:
 - `ssh://<BORG_USER>@<BACKUP_SERVER_HOST>/var/backup/borg/client-host-2`
 
 ## Beispiele
-## Protokollierung
+### Protokollierung
 
 Die SSH-Log-Detailtiefe steuerst du über `SSH_LOG_LEVEL` in der Environment-Datei. Für den Normalbetrieb ist `VERBOSE` geeignet, für detailliertes Troubleshooting `DEBUG2` oder `DEBUG3`.
 
