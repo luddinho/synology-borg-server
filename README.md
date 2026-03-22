@@ -125,17 +125,47 @@ Follow these steps to prepare your environment before starting the server for th
 
 3. Create host paths and permissions:
 
-   ```bash
-   mkdir -p <SSH_CONFIG_DIR>
-   mkdir -p <BORG_REPOS_DIR>
-   touch <AUTHORIZED_KEYS_FILE>
+   Expected NAS layout (example):
 
-   chown -R <BORG_UID>:<BORG_GID> <BORG_REPOS_DIR>
-   chown <BORG_UID>:<BORG_GID> <AUTHORIZED_KEYS_FILE>
-
-   chmod 750 <BORG_REPOS_DIR>
-   chmod 600 <AUTHORIZED_KEYS_FILE>
+   ```text
+   /volume1/
+   └── borg-backups/                              # NAS share (or borg-backups-prod / borg-backups-test)
+       ├── config/
+       │   ├── authorized_keys                    # create this file manually
+       │   └── ssh/                               # create this directory manually
+       │       ├── ssh_host_rsa_key               # created by container on first start (if missing)
+       │       ├── ssh_host_rsa_key.pub           # created by container on first start (if missing)
+       │       ├── ssh_host_ecdsa_key             # created by container on first start (if missing)
+       │       ├── ssh_host_ecdsa_key.pub         # created by container on first start (if missing)
+       │       ├── ssh_host_ed25519_key           # created by container on first start (if missing)
+       │       └── ssh_host_ed25519_key.pub       # created by container on first start (if missing)
+       └── repos/                                 # Borg repositories (client-host-a, client-host-b, ...)
    ```
+
+   Note: persistent SSH host keys inside `config/ssh` are generated automatically by the container during startup when they do not exist yet.
+
+   Option A (CLI example, Synology SSH shell):
+
+   ```bash
+   SHARE_ROOT=/volume1/borg-backups
+
+   mkdir -p "$SHARE_ROOT/config/ssh"
+   mkdir -p "$SHARE_ROOT/repos"
+   touch "$SHARE_ROOT/config/authorized_keys"
+
+   chown -R <BORG_UID>:<BORG_GID> "$SHARE_ROOT/repos"
+   chown <BORG_UID>:<BORG_GID> "$SHARE_ROOT/config/authorized_keys"
+
+   chmod 750 "$SHARE_ROOT/repos"
+   chmod 600 "$SHARE_ROOT/config/authorized_keys"
+   ```
+
+   Option B (Synology DSM 7 UI example):
+   - Open **Control Panel > Shared Folder** and create a shared folder, e.g. `borg-backups`.
+   - Open **File Station** and create `config` and `repos` inside that share.
+   - Inside `config`, create folder `ssh` and file `authorized_keys`.
+   - Set permissions so your backup user (UID/GID from `.env`) can read/write `repos` and `authorized_keys`.
+   - Do not create host key files manually; the container creates them in `config/ssh` at first startup.
 
 4. Edit `authorized_keys` on the host:
    - Use `authorized_keys.example` as reference.
