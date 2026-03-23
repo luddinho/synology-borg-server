@@ -18,6 +18,7 @@ Synology DSM erlaubt für Nicht-Admin-Benutzer keinen interaktiven Shell-Login, 
 - Lädt erlaubte öffentliche Schlüssel aus einer gemounteten `authorized_keys`-Datei.
 - Speichert SSH-Host-Keys persistent, damit der SSH-Fingerprint stabil bleibt.
 - Speichert alle Borg-Repositories unter `/var/backup/borg`.
+- Optional: aktualisiert alle 10 Minuten blocklist.de-IP-Feeds und erzwingt Sperren über container-interne `ipset`/`iptables`-Regeln.
 
 ## Vorteile dieses Projekts
 Wenn der Borg-Server in einem Docker-Container läuft, der von einem Nicht-Admin-Benutzer mit aktiviertem restrict-Pfadschutz genutzt werden kann, ergeben sich folgende Vorteile:
@@ -101,6 +102,34 @@ synology-borg-server/
   - `authorized_keys`-Datei
   - Borg-Repositories
 - Ein dedizierter Nicht-Admin-Benutzer auf NAS/Server.
+
+### Optional: blocklist.de-basierte IP-Sperren im Container
+
+Wenn aktiviert, aktualisiert der Container alle 10 Minuten IPs von blocklist.de und setzt Sperrregeln via `ipset`/`iptables` innerhalb des Container-Netzwerk-Namespaces.
+
+- Neue IPs aus dem Feed werden automatisch hinzugefügt.
+- IPs, die nicht mehr im Feed enthalten sind, werden bei jedem Refresh automatisch entfernt.
+- Der blocklist-Typ ist auswählbar: `all`, `ssh`, `mail`, `apache`, `imap`, `ftp`, `sip`, `bots`, `strongips`, `ircbot`, `bruteforcelogin`.
+- Mehrere Typen können über `BLOCKLIST_TYPES` kombiniert werden (z.B. `ssh,bruteforcelogin`).
+- Standard-Typ ist `ssh` (für diesen SSH/Borg-Server empfohlen).
+
+Aktivierung in `.env` (oder `.env.prod` / `.env.test`):
+
+```bash
+BLOCKLIST_ENABLED=true
+BLOCKLIST_TYPE=ssh
+BLOCKLIST_TYPES=
+BLOCKLIST_URL=
+BLOCKLIST_CRON=*/10 * * * *
+BLOCKLIST_TARGET_PORTS=22
+```
+
+Priorität der Quellen-Auswahl:
+1. `BLOCKLIST_URL` (expliziter Custom-URL-Override)
+2. `BLOCKLIST_TYPES` (mehrere blocklist.de-Typen)
+3. `BLOCKLIST_TYPE` (ein einzelner blocklist.de-Typ)
+
+Die Compose-Datei enthält bereits die notwendige `NET_ADMIN`-Capability für container-interne Firewall-Regeln.
 
 ## Kompatibilität
 

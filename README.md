@@ -18,6 +18,7 @@ Synology DSM does not allow interactive shell login for non-admin users, and tho
 - Loads authorized client public keys from a mounted `authorized_keys` file.
 - Persists SSH host keys to keep the SSH fingerprint stable.
 - Stores all Borg repositories under `/var/backup/borg` (mounted to your NAS storage).
+- Optional: pulls blocklist.de IP feeds every 10 minutes and enforces bans with container-internal `ipset`/`iptables` rules.
 
 ## Advantages of this Project
 Running the Borg server in a Docker container with non-admin user support and restrict paths protection offers several advantages:
@@ -101,6 +102,34 @@ synology-borg-server/
   - `authorized_keys` file
   - Borg repositories
 - A dedicated non-admin user on your NAS/server.
+
+### Optional: blocklist.de-based IP bans inside the container
+
+If enabled, the container updates IPs from blocklist.de every 10 minutes and applies ban rules via `ipset`/`iptables` inside the container network namespace.
+
+- New IPs from the feed are added automatically.
+- IPs no longer present in the feed are removed automatically on each refresh.
+- You can select the blocklist type: `all`, `ssh`, `mail`, `apache`, `imap`, `ftp`, `sip`, `bots`, `strongips`, `ircbot`, `bruteforcelogin`.
+- You can also combine multiple types via `BLOCKLIST_TYPES` (for example `ssh,bruteforcelogin`).
+- Default type is `ssh` (recommended for this SSH/Borg server).
+
+Enable it in your `.env` (or `.env.prod` / `.env.test`):
+
+```bash
+BLOCKLIST_ENABLED=true
+BLOCKLIST_TYPE=ssh
+BLOCKLIST_TYPES=
+BLOCKLIST_URL=
+BLOCKLIST_CRON=*/10 * * * *
+BLOCKLIST_TARGET_PORTS=22
+```
+
+Source selection priority:
+1. `BLOCKLIST_URL` (explicit custom URL override)
+2. `BLOCKLIST_TYPES` (multiple blocklist.de types)
+3. `BLOCKLIST_TYPE` (single blocklist.de type)
+
+The Compose file already includes `NET_ADMIN` capability required by container-internal firewall rules.
 
 ## Compatibility
 

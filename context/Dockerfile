@@ -3,10 +3,14 @@ FROM alpine:3.23
 RUN apk add --no-cache \
     openssh-server \
     borgbackup \
+    curl \
+    ipset \
+    iptables \
     tzdata
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+COPY blocklist-firewall-update.sh /usr/local/bin/blocklist-firewall-update.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/blocklist-firewall-update.sh
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["/usr/sbin/sshd", "-D", "-e"]

@@ -55,4 +55,27 @@ PidFile /run/sshd.pid
 ChrootDirectory none
 EOF
 
+blocklist_enabled="${BLOCKLIST_ENABLED:-false}"
+case "$blocklist_enabled" in
+  true|TRUE|1|yes|YES)
+    blocklist_cron="${BLOCKLIST_CRON:-*/10 * * * *}"
+    cat > /etc/crontabs/root <<EOF
+SHELL=/bin/sh
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
+${blocklist_cron} /usr/local/bin/blocklist-firewall-update.sh >/proc/1/fd/1 2>/proc/1/fd/2
+EOF
+
+    # Seed rules once during startup so protection is active immediately.
+    /usr/local/bin/blocklist-firewall-update.sh || echo "[blocklist] initial update failed" >&2
+
+    # BusyBox crond runs in background by default.
+    crond -L /proc/1/fd/1
+    ;;
+  false|FALSE|0|no|NO|"") ;;
+  *)
+    echo "Invalid BLOCKLIST_ENABLED '$blocklist_enabled'. Allowed values: true,false,1,0,yes,no" >&2
+    exit 1
+    ;;
+esac
+
 exec "$@"
